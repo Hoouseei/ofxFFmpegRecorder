@@ -369,13 +369,20 @@ bool ofxFFmpegRecorder::startCustomRecord()
     args.push_back("-r " + std::to_string(m_Fps));
     args.push_back("-framerate " + std::to_string(m_Fps));
     args.push_back("-s " + std::to_string(static_cast<unsigned int>(m_VideoSize.x)) + "x" + std::to_string(static_cast<unsigned int>(m_VideoSize.y)));
+#if defined(TARGET_OSX)
     args.push_back("-f rawvideo");
     //args.push_back("-pix_fmt rgb24");
 	args.push_back("-pix_fmt " + mPixFmt);
     args.push_back("-vcodec rawvideo");
     args.push_back("-i -");
-    
+#else
+    args.push_back("-f mjpeg");
+    //args.push_back("-pix_fmt rgb24");
+    args.push_back("-pix_fmt " + mPixFmt);
+    args.push_back("-vcodec mjpeg");
+    args.push_back("-i -");
 
+#endif
     args.push_back("-vcodec " + m_VideCodec);
     args.push_back("-b:v " + std::to_string(m_BitRate) + "k");
     args.push_back("-r " + std::to_string(m_Fps));
